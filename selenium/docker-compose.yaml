@@ -1,0 +1,126 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: selenium/app/Dockerfile
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: curl http://localhost:8080/selenium-demo/
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+  selenium-hub:
+    image: selenium/hub:4.0.0
+    ports:
+      - 4444:4444
+    healthcheck:
+      test: curl http://localhost:4444/wd/hub
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+  node-chrome:
+    image: selenium/node-chrome:4.0.0
+    environment:
+      - name=value
+      - TZ=Asia/Tokyo
+      - HUB_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    healthcheck:
+      test: curl http://localhost:5555
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  test-runner-for-chrome:
+    build: ./test-runner
+    command:
+      - "test_demo_grid.py"
+    depends_on:
+      app:
+        condition: service_healthy
+      selenium-hub:
+        condition: service_healthy
+      node-chrome:
+        condition: service_healthy
+    volumes:
+      - ./test-runner/results/chrome:/workspace/results
+    tty: true
+    environment:
+      - BROWSER=chrome
+      - HUB_HOST=selenium-hub
+      - APP_URL=http://app:8080/selenium-demo/
+      - TEST_IN_CI=${TEST_IN_CI:-false}
+  node-edge:
+    image: selenium/node-edge:4.0.0
+    environment:
+      - name=value
+      - TZ=Asia/Tokyo
+      - HUB_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    healthcheck:
+      test: curl http://localhost:5555
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  test-runner-for-edge:
+    build: ./test-runner
+    command:
+      - "test_demo_grid.py"
+    depends_on:
+      app:
+        condition: service_healthy
+      selenium-hub:
+        condition: service_healthy
+      node-edge:
+        condition: service_healthy
+    volumes:
+      - ./test-runner/results/edge:/workspace/results
+    tty: true
+    environment:
+      - BROWSER=edge
+      - HUB_HOST=selenium-hub
+      - APP_URL=http://app:8080/selenium-demo/
+      - TEST_IN_CI=${TEST_IN_CI:-false}
+  node-firefox:
+    image: selenium/node-firefox:4.0.0
+    environment:
+      - name=value
+      - TZ=Asia/Tokyo
+      - HUB_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    healthcheck:
+      test: curl http://localhost:5555
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  test-runner-for-firefox:
+    build: ./test-runner
+    command:
+      - "test_demo_grid.py"
+    depends_on:
+      app:
+        condition: service_healthy
+      selenium-hub:
+        condition: service_healthy
+      node-firefox:
+        condition: service_healthy
+    volumes:
+      - ./test-runner/results/firefox:/workspace/results
+    tty: true
+    environment:
+      - BROWSER=firefox
+      - HUB_HOST=selenium-hub
+      - APP_URL=http://app:8080/selenium-demo/
+      - TEST_IN_CI=${TEST_IN_CI:-false}

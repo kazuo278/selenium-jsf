@@ -1,0 +1,35 @@
+name: Selenium Test
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: テスト環境のビルド&テスト実施
+        run: |-
+          docker-compose -f selenium/docker-compose.yaml build
+          TEST_IN_CI=true docker-compose -f selenium/docker-compose.yaml up -d
+      - name: Chrome実行結果確認
+        if: ${{ always() }}
+        run: |-
+          docker-compose -f selenium/docker-compose.yaml exec -T test-runner-for-chrome pytest test_demo_grid.py
+      - name: Edgeテスト
+        if: ${{ always() }}
+        run: |-
+          docker-compose -f selenium/docker-compose.yaml exec -T test-runner-for-edge pytest test_demo_grid.py
+      - name: Firefoxテスト
+        if: ${{ always() }}
+        run: |-
+          docker-compose -f selenium/docker-compose.yaml exec -T test-runner-for-firefox pytest test_demo_grid.py
+      - name: エビデンスを圧縮
+        if: ${{ always() }}
+        run: >-
+          zip -r results.zip selenium/test-runner/results/
+      - name: Upload Evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: evidences
+          path: results.zip

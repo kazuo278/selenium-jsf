@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:faces="jakarta.faces" xmlns:h="jakarta.faces.html"
+  xmlns:f="jakarta.faces.core" xmlns:ui="jakarta.faces.core"
+  xmlns:pt="jakarta.faces.passthrough">
+
+<h:head>
+  <title>Selenium Demo</title>
+</h:head>
+
+<h:body>
+  <h:messages id="messages" style="color: red"/>
+  <h:form prependId="false">
+    <p>itemリスト</p>
+    <h:dataTable id="item-table" border="1" var="item" value="#{page1Bean.itemList}">
+      <h:column>
+        <f:facet name="header">名前</f:facet>
+        <h:outputText id="tabel-item-#{item.name}" value="#{item.name}" />
+      </h:column>
+      <h:column>
+        <f:facet name="header">個数</f:facet>
+        <h:outputText id="table-item-#{item.amount}" value="#{item.amount}" />
+      </h:column>
+    </h:dataTable>
+    <hr />
+    <p>item追加</p>
+    <h:panelGrid id="add-new-item-form" columns="2" border="2">
+      <h:outputText value="名前" />
+      <h:inputText id="new-item-name" value="#{page1Bean.newItemName}" />
+      <h:outputText value="個数" />
+      <h:inputText id="new-item-amount" pt:type="number" value="#{page1Bean.newItemAmount}" />
+    </h:panelGrid>
+    <h:commandButton id="add-new-item" actionListener="#{page1Bean.addItem()}" value="追加">
+      <f:ajax execute="@this new-item-name new-item-amount" render="item-table add-new-item-form messages" />
+    </h:commandButton>
+  </h:form>
+</h:body>
+
+</html>

@@ -1,0 +1,8 @@
+# Maven
+target/
+# Pytest
+__pycache__
+.pytest_cache
+# Selenium Screenshots
+selenium/test-runner/results/**/*.png
+*.zip

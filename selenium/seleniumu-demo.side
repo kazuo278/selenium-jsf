@@ -1,0 +1,182 @@
+{
+  "id": "f4e01fa5-c8bb-4326-b488-04e8ef1d717e",
+  "version": "2.0",
+  "name": "selenium-demo",
+  "url": "http://localhost:8080",
+  "tests": [{
+    "id": "43cb3eb4-79ee-49a6-a367-ed6ecb36b13f",
+    "name": "selenium-demo",
+    "commands": [{
+      "id": "eb4e7a1e-6307-4daf-bf32-2a3ea16a57ba",
+      "comment": "",
+      "command": "open",
+      "target": "/selenium-demo/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8f905f97-f3ab-484b-9dd4-605467869e74",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "562x708",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a33dc400-6474-456e-87a2-2c21df3a38a7",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-new-item",
+      "targets": [
+        ["id=add-new-item", "id"],
+        ["name=add-new-item", "name"],
+        ["css=#add-new-item", "css:finder"],
+        ["xpath=//input[@id='add-new-item']", "xpath:attributes"],
+        ["xpath=//form[@id='j_idt6']/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3cf28f8c-e128-4983-ba9d-f901d48912ab",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=li:nth-child(1)",
+      "targets": [
+        ["css=li:nth-child(1)", "css:finder"],
+        ["xpath=//ul[@id='messages']/li", "xpath:idRelative"],
+        ["xpath=//li", "xpath:position"],
+        ["xpath=//li[contains(.,'品名を入力してください')]", "xpath:innerText"]
+      ],
+      "value": "品名を入力してください"
+    }, {
+      "id": "0128a477-f162-4fed-93a5-7279d1ae8ade",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=li:nth-child(2)",
+      "targets": [
+        ["css=li:nth-child(2)", "css:finder"],
+        ["xpath=//ul[@id='messages']/li[2]", "xpath:idRelative"],
+        ["xpath=//li[2]", "xpath:position"],
+        ["xpath=//li[contains(.,'個数を入力してください')]", "xpath:innerText"]
+      ],
+      "value": "個数を入力してください"
+    }, {
+      "id": "3252fe94-1dfa-4d3c-9b7f-19bd84ec9a92",
+      "comment": "",
+      "command": "type",
+      "target": "id=new-item-name",
+      "targets": [
+        ["id=new-item-name", "id"],
+        ["name=new-item-name", "name"],
+        ["css=#new-item-name", "css:finder"],
+        ["xpath=//input[@id='new-item-name']", "xpath:attributes"],
+        ["xpath=//table[@id='add-new-item-form']/tbody/tr/td[2]/input", "xpath:idRelative"],
+        ["xpath=//td[2]/input", "xpath:position"]
+      ],
+      "value": "ぶどう"
+    }, {
+      "id": "57c668f1-cdd1-426f-84f3-c71e520388cf",
+      "comment": "",
+      "command": "type",
+      "target": "id=new-item-amount",
+      "targets": [
+        ["id=new-item-amount", "id"],
+        ["name=new-item-amount", "name"],
+        ["css=#new-item-amount", "css:finder"],
+        ["xpath=//input[@id='new-item-amount']", "xpath:attributes"],
+        ["xpath=//table[@id='add-new-item-form']/tbody/tr[2]/td[2]/input", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[2]/input", "xpath:position"]
+      ],
+      "value": "-1"
+    }, {
+      "id": "141ff350-77c9-47d6-98b0-3b40ba33dc5d",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-new-item",
+      "targets": [
+        ["id=add-new-item", "id"],
+        ["name=add-new-item", "name"],
+        ["css=#add-new-item", "css:finder"],
+        ["xpath=//input[@id='add-new-item']", "xpath:attributes"],
+        ["xpath=//form[@id='j_idt6']/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6d7829f2-4304-4a2d-a136-c1c8822b28a4",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=li",
+      "targets": [
+        ["css=li", "css:finder"],
+        ["xpath=//ul[@id='messages']/li", "xpath:idRelative"],
+        ["xpath=//li", "xpath:position"],
+        ["xpath=//li[contains(.,'個数は1以上の整数を指定してください')]", "xpath:innerText"]
+      ],
+      "value": "個数は1以上の整数を指定してください"
+    }, {
+      "id": "33d18dc4-3594-4168-8406-b1000db4904f",
+      "comment": "",
+      "command": "type",
+      "target": "id=new-item-amount",
+      "targets": [
+        ["id=new-item-amount", "id"],
+        ["name=new-item-amount", "name"],
+        ["css=#new-item-amount", "css:finder"],
+        ["xpath=//input[@id='new-item-amount']", "xpath:attributes"],
+        ["xpath=//table[@id='add-new-item-form']/tbody/tr[2]/td[2]/input", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[2]/input", "xpath:position"]
+      ],
+      "value": "1"
+    }, {
+      "id": "e4735bd3-74bf-41ec-8f8e-5194aab21dba",
+      "comment": "",
+      "command": "click",
+      "target": "id=add-new-item",
+      "targets": [
+        ["id=add-new-item", "id"],
+        ["name=add-new-item", "name"],
+        ["css=#add-new-item", "css:finder"],
+        ["xpath=//input[@id='add-new-item']", "xpath:attributes"],
+        ["xpath=//form[@id='j_idt6']/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b2d04fe6-3f54-48ce-a0c0-a5e9da23b40e",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=item-table:2:tabel-item-",
+      "targets": [
+        ["id=item-table:2:tabel-item-", "id"],
+        ["css=#item-table\\3A 2\\3Atabel-item-", "css:finder"],
+        ["xpath=//span[@id='item-table:2:tabel-item-']", "xpath:attributes"],
+        ["xpath=//table[@id='item-table']/tbody/tr[3]/td/span", "xpath:idRelative"],
+        ["xpath=//tr[3]/td/span", "xpath:position"],
+        ["xpath=//span[contains(.,'ぶどう')]", "xpath:innerText"]
+      ],
+      "value": "ぶどう"
+    }, {
+      "id": "8c73ecc2-e64f-4b2f-a06f-3c306cb0e6ac",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=item-table:2:table-item-",
+      "targets": [
+        ["id=item-table:2:table-item-", "id"],
+        ["css=#item-table\\3A 2\\3Atable-item-", "css:finder"],
+        ["xpath=//span[@id='item-table:2:table-item-']", "xpath:attributes"],
+        ["xpath=//table[@id='item-table']/tbody/tr[3]/td[2]/span", "xpath:idRelative"],
+        ["xpath=//tr[3]/td[2]/span", "xpath:position"]
+      ],
+      "value": "1"
+    }]
+  }],
+  "suites": [{
+    "id": "b4ad7a90-2c7b-4c7c-8170-f67baec7bd25",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["43cb3eb4-79ee-49a6-a367-ed6ecb36b13f"]
+  }],
+  "urls": ["http://localhost:8080/"],
+  "plugins": []
+}

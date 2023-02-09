@@ -1,0 +1,32 @@
+{
+  "name": "java11 wildfly27",
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "wildfly",
+  "workspaceFolder": "/workspace",
+  "overrideCommand": true,
+  "settings": {
+    "terminal.integrated.profiles.linux": {
+      "bash": {
+        "path": "bash",
+        "icon": "terminal-bash"
+      }
+    },
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "java.server.launchMode": "Standard",
+    "java.configuration.updateBuildConfiguration": "interactive"
+  },
+  "extensions": [
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-lombok",
+    "mhutchie.git-graph",
+    "DavidAnson.vscode-markdownlint",
+    "shardulm94.trailing-spaces",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "2gua.rainbow-brackets",
+    "oderwat.indent-rainbow",
+    "hediet.vscode-drawio",
+    "ms-azuretools.vscode-docker"
+  ],
+  "shutdownAction": "stopCompose"
+}
