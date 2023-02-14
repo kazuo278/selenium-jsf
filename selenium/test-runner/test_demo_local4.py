@@ -27,25 +27,25 @@ class TestDemo():
     self.driver.set_window_size(579, 705)
     self.driver.find_element(By.ID, "add-new-item").click()
     time.sleep(1)
-    assert self.driver.find_element(By.CSS_SELECTOR, "li:nth-child(1)").text == "品名を入力してください"
-    assert self.driver.find_element(By.CSS_SELECTOR, "li:nth-child(2)").text == "個数を入力してください"
     # 追加：スクリーンショットの取得
     self.driver.save_screenshot("./results/local/test1.png")
+    assert self.driver.find_element(By.CSS_SELECTOR, "li:nth-child(1)").text == "品名を入力してください"
+    assert self.driver.find_element(By.CSS_SELECTOR, "li:nth-child(2)").text == "個数を入力してください"
     self.driver.find_element(By.ID, "new-item-name").click()
     self.driver.find_element(By.ID, "new-item-name").send_keys("ぶどう")
     self.driver.find_element(By.ID, "new-item-amount").send_keys("-1")
     self.driver.find_element(By.CSS_SELECTOR, "html").click()
     self.driver.find_element(By.ID, "add-new-item").click()
     time.sleep(1)
-    assert self.driver.find_element(By.CSS_SELECTOR, "li").text == "個数は1以上の整数を指定してください"
     # 追加：スクリーンショットの取得
     self.driver.save_screenshot("./results/local/test2.png")
+    assert self.driver.find_element(By.CSS_SELECTOR, "li").text == "個数は1以上の整数を指定してください"
     self.driver.find_element(By.ID, "new-item-amount").click()
     self.driver.find_element(By.ID, "new-item-amount").clear()
     self.driver.find_element(By.ID, "new-item-amount").send_keys("1")
     self.driver.find_element(By.ID, "add-new-item").click()
     time.sleep(1)
-    assert self.driver.find_element(By.ID, "item-table:2:tabel-item-").text == "ぶどう"
-    assert self.driver.find_element(By.ID, "item-table:2:table-item-").text == "1"
     # 追加：スクリーンショットの取得
     self.driver.save_screenshot("./results/local/test3.png")
+    assert self.driver.find_element(By.ID, "item-table:2:tabel-item-").text == "ぶどう"
+    assert self.driver.find_element(By.ID, "item-table:2:table-item-").text == "1"

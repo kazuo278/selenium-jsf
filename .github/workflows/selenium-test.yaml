@@ -9,20 +9,26 @@ jobs:
       - uses: actions/checkout@v3
       - name: テスト環境のビルドと実行
         run: |-
-          docker-compose -f selenium/docker-compose.yaml build
-          TEST_IN_CI=true docker-compose -f selenium/docker-compose.yaml up -d
-      - name: Chrome実行結果確認
+          docker compose -f selenium/docker-compose.yaml build
+          docker compose -f selenium/docker-compose.yaml up -d
+      - name: Chromeテスト結果確認
         if: ${{ always() }}
         run: |-
-          docker-compose -f selenium/docker-compose.yaml exec -T test-runner-for-chrome pytest test_demo_grid.py
-      - name: Edgeテスト
+          docker compose -f selenium/docker-compose.yaml logs test-runner-for-chrome
+          EXITCODE=$(docker compose -f selenium/docker-compose.yaml ps -a --format json test-runner-for-chrome | jq '.[0].ExitCode')
+          if [ $EXITCODE -ne 0 ]; then exit 1; fi
+      - name: Edgeテスト結果確認
         if: ${{ always() }}
         run: |-
-          docker-compose -f selenium/docker-compose.yaml exec -T test-runner-for-edge pytest test_demo_grid.py
-      - name: Firefoxテスト
+          docker compose -f selenium/docker-compose.yaml logs test-runner-for-edge
+          EXITCODE=$(docker compose -f selenium/docker-compose.yaml ps -a --format json test-runner-for-edge | jq '.[0].ExitCode')
+          if [ $EXITCODE -ne 0 ]; then exit 1; fi
+      - name: Firefoxテスト結果確認
         if: ${{ always() }}
         run: |-
-          docker-compose -f selenium/docker-compose.yaml exec -T test-runner-for-firefox pytest test_demo_grid.py
+          docker compose -f selenium/docker-compose.yaml logs test-runner-for-firefox
+          EXITCODE=$(docker compose -f selenium/docker-compose.yaml ps -a --format json test-runner-for-firefox | jq '.[0].ExitCode')
+          if [ $EXITCODE -ne 0 ]; then exit 1; fi
       - name: エビデンスを圧縮
         if: ${{ always() }}
         run: >-
