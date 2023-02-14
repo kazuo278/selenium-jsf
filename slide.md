@@ -150,20 +150,16 @@ theme: default
 6. ③で作成した[pythonテストコードv3](./selenium/test-runner/test_demo_local2.py)に、評価時にスクリーンショットを撮る処理を追加
 
     ```py
+    # 追加：スクリーンショットの取得
+    # assert後にスクリーンショットを処理を入れると、期待する処理をしない際にスクリーンショットが取得できない
+    self.driver.save_screenshot("./results/local/test1.png")
     assert self.driver.find_element(By.CSS_SELECTOR, "li:nth-child(1)").text == "品名を入力してください"
     assert self.driver.find_element(By.CSS_SELECTOR, "li:nth-child(2)").text == "個数を入力してください"
-    # 追加：スクリーンショットの取得
-    self.driver.save_screenshot("./results/local/test1.png")
     ```
 
     - スクリーンショット抜粋  
-      ![test.png h:200px border](resources/test1.png)
-
-<style>
-img {
-    border: 1px solid;
-}
-</style>
+      |![test.png h:200px border](resources/test1.png)|
+      |:---:|
 
 ---
 
@@ -171,14 +167,30 @@ img {
 
 1. テスト環境の作成
     1. [Test Runenrコンテナ定義ファイル](./selenium/test-runner/Dockerfile)の作成  
-      pytestを実施するイメージとなる[Dockerfile](./selenium/test-runner/Dockerfile)を作成。起動時にテストを実施(`pytest`)、またはCI実行用に起動後アタッチして実行できるようにする
+      起動時に`pytest`を実行する[Dockerfile](./selenium/test-runner/Dockerfile)を作成
     1. [docker-compose.yaml](./selenium/docker-compose.yaml)の作成
-      pytestを実施するコンテナは、同時テストが行えるようテスト対象のブラウザの数だけ用意する。  
-      pytestを実施するコンテナは、Selenium Grid, Selenium Node(ブラウザを動作する環境),テスト対象アプリが起動してから起動するようにする。
+        - 利用するコンテナ
+          - app(テスト対象アプリ)
+          - selenium-hub
+          - node  
+            ブラウザの実行環境。テスト対象ブラウザ分用意する
+          - test-runner  
+            テストを実行するコンテナ。テスト対象ブラウザ分用意する
+          - finalizer  
+            test完了判定用コンテナ。CIでテスト結果判定に利用する
 
-        - Selenium Grid, Selenium Node, テスト対象アプリの`healthcheck`定義を記載する
-        - test-runnerは、Selenium Grid, Selenium Nodeの`service_healthy`を確認してから起動させる
+---
 
+### docker(Selenium Grid + Selenium Node)でテストコード実行②
+
+- docker-composeにおけるサービス依存関係(起動順)に関する注意点  
+  テストに必要な環境が正常起動したのちにテストを実施する必要があるため、サービスの起動の順序やその条件を指定する必要がある。
+  - test-runner  
+    selenium-hub, node, appの`healthcheck`定義を記載する  
+    test-runnerは、selenium-hub, node, appの`service_healthy(起動完了)`を確認してから起動させる
+  - finalizer  
+    test-runnerの`service_completed_successfully(正常終了)`を確認してから実行する。  
+    テスト実行コマンドである`docker-compose up　-d`は、全てのコンテナ起動開始後にプロンプトが返る。そのため、プロンプトが戻った後すぐにテスト結果を確認できるよう、テスト完了に依存したコンテナを用意した。
 ---
 
 ### docker(Selenium Grid + Selenium Node)でテストコード実行②
@@ -212,44 +224,26 @@ img {
 
 1. [CI(GitHub Actions実行コード)](./.github/workflows/selenium-test.yaml)に記載
 
-    UIテストを並列実行した場合、
-    `docker-compose up`では複数のテストRunnerサービスの正常終了を検知できない。(単一サービスは可能)
-    そこで、以下コマンドにより、各テストRunnerをアタッチし、逐次的に実行する
+    以下コマンドにより、テスト実行および評価を実施する
 
     ```sh
-    # テスト環境のビルドと実行(Runnerはコンテナ起動のみでテスト実行はさせない)
-    docker-compose -f selenium/docker-compose.yaml build
-    TEST_IN_CI=true docker-compose -f selenium/docker-compose.yaml up -d
-    # Chrome向けテスト結果の確認
-    docker-compose -f selenium/docker-compose.yaml \ 
-    exec -T test-runner-for-chrome pytest test_demo_grid.py
-    # Edge向けテスト結果の確認
-    docker-compose -f selenium/docker-compose.yaml \ 
-    exec -T test-runner-for-edge pytest test_demo_grid.py
-    # Firefox向けテスト結果の確認
-    docker-compose -f selenium/docker-compose.yaml \ 
-    exec -T test-runner-for-firefox pytest test_demo_grid.py
-    ```
-
----
-
-### CI(GitHub Actions）への組み込み②
-
-- 失敗した並列テスト実行
-
-    本来は、以下の通り、ローカルでのdocker~compose起動と同様に並列でテスト実行させたかったが、
-    テスト結果評価が、テスト終了前に実行されてしまった。
-
-    ```sh
-    # テスト環境のビルド&テストのバックグラウンド実行
-    docker-compose -f selenium/docker-compose.yaml build
-    docker-compose -f selenium/docker-compose.yaml up -d
-    # Chrome向けテスト結果の確認
-    docker-compose -f selenium/docker-compose.yaml logs test-runner-for-chrome
-    #　テストが終了する前に実行するため、EXITCODEは存在しない。
-    EXITCODE=$(docker-compose -f selenium/docker-compose.yaml \
-                ps --format json test-runner-for-chrome | jq '.[0].ExitCode');
-    #　＄EXITCODEは空文字のため、構文エラーが発生
+    docker compose -f selenium/docker-compose.yaml up -d
+    # Chromeテスト結果確認
+    # github-hosted-runnerのdocker-composeでは、--formatオプションが利用不可のため
+    # docker composeを利用する。この場合、停止したコンテナの表示に-aオプションが必要となる
+    docker compose -f selenium/docker-compose.yaml logs test-runner-for-chrome
+    EXITCODE=$(docker compose -f selenium/docker-compose.yaml \
+                ps -a --format json test-runner-for-chrome | jq '.[0].ExitCode');
+    if [ $EXITCODE -ne 0 ]; then exit 1; fi
+    # Edgeテスト結果確認
+    docker compose -f selenium/docker-compose.yaml logs test-runner-for-edge
+    EXITCODE=$(docker compose -f selenium/docker-compose.yaml \
+                ps -a --format json test-runner-for-edge | jq '.[0].ExitCode');
+    if [ $EXITCODE -ne 0 ]; then exit 1; fi
+    # Firefoxテスト結果確認
+    docker compose -f selenium/docker-compose.yaml logs test-runner-for-firefox
+    EXITCODE=$(docker compose -f selenium/docker-compose.yaml \
+                ps -a --format json test-runner-for-firefox | jq '.[0].ExitCode');
     if [ $EXITCODE -ne 0 ]; then exit 1; fi
     ```
 
@@ -350,9 +344,6 @@ JSFの仕様によりテーブル(dataTable)のレコード、カラムには意
 
 - アプリ改修時のテストコードの改修方法の調査
   - sideプロジェクトを変更？ or 直接テストコードを変更？
-
-- CIでのクロスブラウザテストの並列実行方法の調査
-  - 各テストRunner実行完了(停止)後に起動するコンテナをする？
 
 - テストコードの言語の比較(java,Python)
   - テスト失敗時の処理(エビデンス取得など)の拡張しやすさ

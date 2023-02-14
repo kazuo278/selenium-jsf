@@ -42,26 +42,26 @@ JakartaEEで作成されたWebアプリに対し、UIテストを自動化する
   $ docker-compose -f selenium/docker-compose.yaml build
   ```
 
-- テスト実行
+- テスト環境の実行
 
   ```sh
   $ docker-compose -f selenium/docker-compose.yaml up
   ```
 
-- 個別テスト
+- 個別テストの再実行
 
   ```sh
-  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-chrome pytest test_demo_grid.py
-  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-edge pytest test_demo_grid.py
-  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-firefox pytest test_demo_grid.py
+  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-chrome test_demo_grid.py
+  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-edge test_demo_grid.py
+  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-firefox test_demo_grid.py
   ```
 
-- 個別テストテスト実行(失敗ケース)
+- 個別テスト実行(失敗ケース)
 
   ```sh
-  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-chrome pytest test_demo_grid_fail.py
-  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-edge pytest test_demo_grid_fail.py
-  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-firefox pytest test_demo_grid_fail.py
+  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-chrome test_demo_grid_fail.py
+  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-edge test_demo_grid_fail.py
+  $ docker-compose -f selenium/docker-compose.yaml run test-runner-for-firefox test_demo_grid_fail.py
   ```
 
 - テストケースを変更した時
@@ -180,8 +180,6 @@ JakartaEEで作成されたWebアプリに対し、UIテストを自動化する
 
 - アプリ改修時のテストコードの改修方法の調査
   - sideプロジェクトを変更？ or 直接テストコードを変更？
-
-- CIでのクロスブラウザテストの並列実行方法の調査
 
 - テストコードの言語の比較(java,Python)
   - テスト失敗時の処理(エビデンス取得など)の拡張しやすさ

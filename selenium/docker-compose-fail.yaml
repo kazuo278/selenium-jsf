@@ -40,7 +40,7 @@ services:
   test-runner-for-chrome:
     build: ./test-runner
     command:
-      - "test_demo_grid.py"
+      - "test_demo_grid_fail.py"
     depends_on:
       app:
         condition: service_healthy
@@ -74,7 +74,7 @@ services:
   test-runner-for-edge:
     build: ./test-runner
     command:
-      - "test_demo_grid.py"
+      - "test_demo_grid_fail.py"
     depends_on:
       app:
         condition: service_healthy
@@ -108,7 +108,7 @@ services:
   test-runner-for-firefox:
     build: ./test-runner
     command:
-      - "test_demo_grid.py"
+      - "test_demo_grid_fail.py"
     depends_on:
       app:
         condition: service_healthy
