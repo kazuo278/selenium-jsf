@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - name: テスト環境のビルド&テスト実施
+      - name: テスト環境のビルドと実行
         run: |-
           docker-compose -f selenium/docker-compose.yaml build
           TEST_IN_CI=true docker-compose -f selenium/docker-compose.yaml up -d

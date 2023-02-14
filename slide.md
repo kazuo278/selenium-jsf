@@ -208,30 +208,48 @@ img {
 
 ---
 
-### CI(GitHub Actions）への組み込み
+### CI(GitHub Actions）への組み込み①
 
 1. [CI(GitHub Actions実行コード)](./.github/workflows/selenium-test.yaml)に記載
 
-    以下コマンドにより、テスト実行後に各結果を確認する
+    UIテストを並列実行した場合、
+    `docker-compose up`では複数のテストRunnerサービスの正常終了を検知できない。(単一サービスは可能)
+    そこで、以下コマンドにより、各テストRunnerをアタッチし、逐次的に実行する
 
     ```sh
-    # テスト環境のビルド&テスト実行
+    # テスト環境のビルドと実行(Runnerはコンテナ起動のみでテスト実行はさせない)
     docker-compose -f selenium/docker-compose.yaml build
-    USE_IN_CI=true docker-compose -f selenium/docker-compose.yaml up -d
+    TEST_IN_CI=true docker-compose -f selenium/docker-compose.yaml up -d
+    # Chrome向けテスト結果の確認
+    docker-compose -f selenium/docker-compose.yaml \ 
+    exec -T test-runner-for-chrome pytest test_demo_grid.py
+    # Edge向けテスト結果の確認
+    docker-compose -f selenium/docker-compose.yaml \ 
+    exec -T test-runner-for-edge pytest test_demo_grid.py
+    # Firefox向けテスト結果の確認
+    docker-compose -f selenium/docker-compose.yaml \ 
+    exec -T test-runner-for-firefox pytest test_demo_grid.py
+    ```
+
+---
+
+### CI(GitHub Actions）への組み込み②
+
+- 失敗した並列テスト実行
+
+    本来は、以下の通り、ローカルでのdocker~compose起動と同様に並列でテスト実行させたかったが、
+    テスト結果評価が、テスト終了前に実行されてしまった。
+
+    ```sh
+    # テスト環境のビルド&テストのバックグラウンド実行
+    docker-compose -f selenium/docker-compose.yaml build
+    docker-compose -f selenium/docker-compose.yaml up -d
     # Chrome向けテスト結果の確認
     docker-compose -f selenium/docker-compose.yaml logs test-runner-for-chrome
+    #　テストが終了する前に実行するため、EXITCODEは存在しない。
     EXITCODE=$(docker-compose -f selenium/docker-compose.yaml \
                 ps --format json test-runner-for-chrome | jq '.[0].ExitCode');
-    if [ $EXITCODE -ne 0 ]; then exit 1; fi
-    # Edge向けテスト結果の確認
-    docker-compose -f selenium/docker-compose.yaml logs test-runner-for-edge
-    EXITCODE=$(docker-compose -f selenium/docker-compose.yaml \
-                ps --format json test-runner-for-edge | jq '.[0].ExitCode');
-    if [ $EXITCODE -ne 0 ]; then exit 1; fi
-    # Firefox向けテスト結果の確認
-    docker-compose -f selenium/docker-compose.yaml logs test-runner-for-firefox
-    EXITCODE=$(docker-compose -f selenium/docker-compose.yaml\
-                ps --format json test-runner-for-firefox jq '.[0].ExitCode');
+    #　＄EXITCODEは空文字のため、構文エラーが発生
     if [ $EXITCODE -ne 0 ]; then exit 1; fi
     ```
 
@@ -330,8 +348,11 @@ JSFの仕様によりテーブル(dataTable)のレコード、カラムには意
 - 実際のプロジェクトでのテストコードの長期利用性の検証
   - ブラウザ、APサーバのバージョンアップ
 
-- アプリ改修時のテストコードの改修方法の確率
+- アプリ改修時のテストコードの改修方法の調査
   - sideプロジェクトを変更？ or 直接テストコードを変更？
+
+- CIでのクロスブラウザテストの並列実行方法の調査
+  - 各テストRunner実行完了(停止)後に起動するコンテナをする？
 
 - テストコードの言語の比較(java,Python)
   - テスト失敗時の処理(エビデンス取得など)の拡張しやすさ
