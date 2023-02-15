@@ -7,8 +7,9 @@ import java.util.List;
 import com.example.selenium_demo.dto.Item;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.context.FacesContext;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.validation.constraints.Min;
@@ -22,10 +23,13 @@ import lombok.Setter;
 public class Page1Bean implements Serializable {
 
   @Inject
-  FacesContext context;
+  ExternalContext context;
 
   @Getter
   List<Item> itemList;
+
+  @Getter
+  String userAgent;
 
   @Getter
   @Setter
@@ -46,6 +50,9 @@ public class Page1Bean implements Serializable {
     Item melon = new Item("メロン", 3);
     itemList.add(apple);
     itemList.add(melon);
+    // ユーザエージェントの取得
+    HttpServletRequest request =(HttpServletRequest)context.getRequest();
+    this.userAgent = request.getHeader("user-agent");
   }
 
   public void addItem() {

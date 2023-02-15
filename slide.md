@@ -159,6 +159,7 @@ theme: default
     ```
 
     - スクリーンショット抜粋  
+
       |![test.png h:200px border](resources/test1.png)|
       |:---:|
 
@@ -192,9 +193,10 @@ theme: default
   - finalizer  
     test-runnerの`service_completed_successfully(正常終了)`を確認してから実行する。  
     テスト実行コマンドである`docker-compose up　-d`は、全てのコンテナ起動開始後にプロンプトが返る。そのため、プロンプトが戻った後すぐにテスト結果を確認できるよう、テスト完了に依存したコンテナを用意した。
+
 ---
 
-### docker(Selenium Grid + Selenium Node)でテストコード実行②
+### docker(Selenium Grid + Selenium Node)でテストコード実行③
 
 2. [Selenium Grid向けテストコード](./selenium/test-runner/test_demo_grid.py)の作成  
   テスト対象ブラウザ,Seleum GridのURLを外部化し、適切なDriverを生成させる
